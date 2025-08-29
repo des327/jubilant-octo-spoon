@@ -1,14 +1,10 @@
-- name: Publish to Cloudflare Pages
-  uses: cloudflare/pages-action@v1
-  with:
-    apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-    accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-    projectName: jubilant-octo-spoon   # <-- IMPORTANT: must match Cloudflare project name
-    directory: public                  # <-- or your build output folder
-    wranglerVersion: '3'
+name: Deploy to Cloudflare Pages
 
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
 
-# This is all the permission the action needs
 permissions:
   contents: read
 
@@ -24,25 +20,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # If you have a build step (e.g., Vite/Next/etc.), uncomment this block
-      # - name: Set up Node.js
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: 18
-      #
-      # - name: Install dependencies
-      #   run: npm ci
-      #
-      # - name: Build
-      #   run: npm run build
-      #   # Then set directory: to your build output (e.g., dist)
+      # If you have a build step, keep these 3 steps.
+      # If your site is purely static (files in ./public and functions in ./functions),
+      # you may delete the Node.js / install / build steps.
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Build (if your project has a build script)
+        run: npm run build --if-present
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: fincen            # <-- change if your Pages project has a different name
-          directory: public              # <-- change to your output folder (e.g., dist)
-          # Optional but recommended when using Functions:
+          projectName: jubilant-octo-spoon   # MUST match your Pages project exactly
+          directory: public                  # change if your build output is another folder (e.g., dist)
           wranglerVersion: '3'
+
