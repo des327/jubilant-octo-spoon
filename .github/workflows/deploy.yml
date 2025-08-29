@@ -1,22 +1,46 @@
-name: Deploy to Production
+name: Deploy to Cloudflare Pages
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+  workflow_dispatch:
+
+# This is all the permission the action needs
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy to Cloudflare Pages
+      # If you have a build step (e.g., Vite/Next/etc.), uncomment this block
+      # - name: Set up Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: 18
+      #
+      # - name: Install dependencies
+      #   run: npm ci
+      #
+      # - name: Build
+      #   run: npm run build
+      #   # Then set directory: to your build output (e.g., dist)
+
+      - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: ${{ secrets.CLOUDFLARE_PROJECT_NAME }}
-          directory: ./public
+          projectName: fincen            # <-- change if your Pages project has a different name
+          directory: public              # <-- change to your output folder (e.g., dist)
+          # Optional but recommended when using Functions:
+          wranglerVersion: '3'
