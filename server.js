@@ -1,8 +1,7 @@
 // Load environment variables from a .env file
-require('dotenv').config();
+require('dotenv').config(); 
 
 const express = require('express');
-const fetch = require('node-fetch');
 const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
@@ -16,13 +15,14 @@ app.use(express.json());
 // Serve your static front-end files from the "public" directory
 app.use(express.static('public'));
 
-// Endpoint for explaining jargon
+// Secure API endpoint for explaining jargon
 app.post('/api/explain-jargon', async (req, res) => {
     if (!apiKey) {
         return res.status(500).json({ error: "API key is not configured." });
     }
     
     try {
+        const fetch = (await import('node-fetch')).default;
         const { prompt } = req.body;
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
@@ -54,6 +54,7 @@ app.post('/api/check-reportability', async (req, res) => {
     }
     
     try {
+        const fetch = (await import('node-fetch')).default;
         const { prompt } = req.body;
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
