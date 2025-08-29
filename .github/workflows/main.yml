@@ -19,6 +19,7 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
+        working-directory: . # This tells it to run in the root directory
 
       - name: Run Server with Secret
         run: node server.js
