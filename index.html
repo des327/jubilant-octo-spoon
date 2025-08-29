@@ -7,18 +7,16 @@
 
     <meta name="description" content="Overview of FinCEN’s new AML reporting rule for residential real estate.">
     
-    <!-- Open Graph (Facebook, LinkedIn, etc.) -->
     <meta property="og:title" content="Unmasking Real Estate Transactions">
     <meta property="og:description" content="Triggers, reporting cascade, and industry impact of FinCEN’s new rule.">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="https://yourdomain.com/preview.png"> <!-- IMPORTANT: Replace with your actual image URL -->
-    <meta property="og:url" content="https://yourdomain.com/"> <!-- IMPORTANT: Replace with your final URL -->
+    <meta property="og:image" content="https://yourdomain.com/preview.png">
+    <meta property="og:url" content="https://yourdomain.com/">
 
-    <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Unmasking Real Estate Transactions">
     <meta name="twitter:description" content="FinCEN’s new AML reporting rule for residential real estate.">
-    <meta name="twitter:image" content="https://yourdomain.com/preview.png"> <!-- IMPORTANT: Replace with your actual image URL -->
+    <meta name="twitter:image" content="https://yourdomain.com/preview.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -42,6 +40,40 @@
             .chart-container {
                 height: 350px;
             }
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -163,6 +195,62 @@
                 </div>
             </section>
 
+            <section class="mb-12 bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-3xl font-bold text-center text-[#004E89] mb-6">✨ AI Compliance Assistant</h2>
+                <p class="text-center text-gray-700 max-w-3xl mx-auto mb-8">Utilize our AI assistant to clarify compliance jargon or check the reportability of a hypothetical transaction.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="p-4 bg-gray-50 rounded-lg shadow-inner">
+                        <h3 class="text-xl font-semibold text-[#004E89] mb-3">Jargon Explainer ✨</h3>
+                        <p class="text-gray-600 mb-4">Enter a term related to FinCEN or real estate compliance for a simplified explanation.</p>
+                        <input type="text" id="jargonInput" placeholder="e.g., Beneficial Owner, Transferee Entity" class="w-full p-2 border border-gray-300 rounded-md focus:ring-[#407BA7] focus:border-[#407BA7] mb-3">
+                        <button id="explainJargonBtn" class="w-full bg-[#004E89] text-white py-2 px-4 rounded-md hover:bg-[#407BA7] transition-colors duration-200">✨ Explain Term</button>
+                        <div id="jargonOutput" class="mt-4 p-3 bg-white border border-gray-200 rounded-md text-gray-800 hidden"></div>
+                        <div id="jargonLoader" class="hidden text-center mt-3 text-[#004E89]">Loading explanation...</div>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg shadow-inner">
+                        <h3 class="text-xl font-semibold text-[#004E89] mb-3">Reportability Checker ✨</h3>
+                        <p class="text-gray-600 mb-4">Enter details of a transaction to see if it might be reportable under the new rule.</p>
+                        <div class="space-y-3 mb-3">
+                            <div>
+                                <label for="propType" class="block text-sm font-medium text-gray-700">Property Type:</label>
+                                <select id="propType" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-[#407BA7] focus:border-[#407BA7]">
+                                    <option value="residential">Residential (1-4 family, condo, vacant for res)</option>
+                                    <option value="commercial">Commercial</option>
+                                    <option value="mixed_use_non_res">Mixed-Use (primarily non-residential)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="financing" class="block text-sm font-medium text-gray-700">Financing:</label>
+                                <select id="financing" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-[#407BA7] focus:border-[#407BA7]">
+                                    <option value="non-financed">Non-Financed (All-cash, private lender)</option>
+                                    <option value="traditional_financed">Traditional Lender Financed</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="transferee" class="block text-sm font-medium text-gray-700">Transferee (Buyer):</label>
+                                <select id="transferee" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-[#407BA7] focus:border-[#407BA7]">
+                                    <option value="entity_trust">Legal Entity or Trust</option>
+                                    <option value="individual">Individual</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="exemption" class="block text-sm font-medium text-gray-700">Potential Exemption:</label>
+                                <select id="exemption" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-[#407BA7] focus:border-[#407BA7]">
+                                    <option value="no">No specific exemption applies</option>
+                                    <option value="death_divorce_bankruptcy">Death, Divorce, or Bankruptcy related</option>
+                                    <option value="regulated_entity">Transferee is a highly regulated entity (e.g., bank)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button id="checkReportabilityBtn" class="w-full bg-[#004E89] text-white py-2 px-4 rounded-md hover:bg-[#407BA7] transition-colors duration-200">✨ Check Reportability</button>
+                        <div id="reportabilityOutput" class="mt-4 p-3 bg-white border border-gray-200 rounded-md text-gray-800 hidden"></div>
+                        <div id="reportabilityLoader" class="hidden text-center mt-3 text-[#004E89]">Analyzing transaction...</div>
+                    </div>
+                </div>
+            </section>
+
             <section class="bg-white p-6 rounded-lg shadow-md">
                 <h2 class="text-3xl font-bold text-center text-[#004E89] mb-6">Legal and Legislative Headwinds</h2>
                 <p class="text-center text-gray-700 max-w-3xl mx-auto mb-8">The rule faces significant opposition, creating uncertainty about its final form and implementation. Challenges have been mounted in both courts and Congress.</p>
@@ -188,6 +276,14 @@
         <footer class="text-center mt-12">
             <p class="text-sm text-gray-500">This infographic provides a summary of FinCEN's final rule on residential real estate transfers. Professionals should consult legal counsel for compliance guidance.</p>
         </footer>
+    </div>
+
+    <div id="jargonModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3 class="text-2xl font-bold text-[#004E89] mb-3" id="modalTitle"></h3>
+            <p class="text-gray-700" id="modalText"></p>
+        </div>
     </div>
 
     <script>
@@ -300,6 +396,144 @@
                         },
                         tooltip: commonTooltipOptions.plugins.tooltip
                     }
+                }
+            });
+
+            const jargonInput = document.getElementById('jargonInput');
+            const explainJargonBtn = document.getElementById('explainJargonBtn');
+            const jargonOutput = document.getElementById('jargonOutput');
+            const jargonLoader = document.getElementById('jargonLoader');
+            const jargonModal = document.getElementById('jargonModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalText = document.getElementById('modalText');
+            const closeButton = document.querySelector('.close-button');
+
+            explainJargonBtn.addEventListener('click', async () => {
+                const term = jargonInput.value.trim();
+                if (!term) {
+                    modalTitle.textContent = "Input Required";
+                    modalText.textContent = "Please enter a term to explain.";
+                    jargonModal.style.display = 'flex';
+                    return;
+                }
+
+                jargonLoader.classList.remove('hidden');
+                jargonOutput.classList.add('hidden');
+                modalTitle.textContent = `Explaining: "${term}"`;
+                modalText.textContent = "Generating explanation...";
+                jargonModal.style.display = 'flex';
+
+                try {
+                    const prompt = `Explain the financial or real estate compliance term "${term}" in simple, easy-to-understand language for a general audience, in the context of FinCEN's real estate reporting rules. Keep the explanation concise.`;
+                    let chatHistory = [];
+                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                    const payload = { contents: chatHistory };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                    
+                    let response;
+                    let result;
+                    for (let i = 0; i < 3; i++) {
+                        response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        if (response.status !== 429) { // Not a rate limit error
+                            result = await response.json();
+                            break;
+                        }
+                        await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000)); // Exponential backoff
+                    }
+                    
+                    if (result && result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        modalText.textContent = result.candidates[0].content.parts[0].text;
+                    } else {
+                        modalText.textContent = "Could not generate an explanation. Please try again or rephrase your term.";
+                    }
+                } catch (error) {
+                    console.error("Error explaining jargon:", error);
+                    modalText.textContent = "An error occurred while fetching the explanation. Please try again later.";
+                } finally {
+                    jargonLoader.classList.add('hidden');
+                }
+            });
+
+            closeButton.addEventListener('click', () => {
+                jargonModal.style.display = 'none';
+            });
+
+            window.addEventListener('click', (event) => {
+                if (event.target == jargonModal) {
+                    jargonModal.style.display = 'none';
+                }
+            });
+
+            const propType = document.getElementById('propType');
+            const financing = document.getElementById('financing');
+            const transferee = document.getElementById('transferee');
+            const exemption = document.getElementById('exemption');
+            const checkReportabilityBtn = document.getElementById('checkReportabilityBtn');
+            const reportabilityOutput = document.getElementById('reportabilityOutput');
+            const reportabilityLoader = document.getElementById('reportabilityLoader');
+
+            checkReportabilityBtn.addEventListener('click', async () => {
+                const propTypeValue = propType.value;
+                const financingValue = financing.value;
+                const transfereeValue = transferee.value;
+                const exemptionValue = exemption.value;
+
+                reportabilityLoader.classList.remove('hidden');
+                reportabilityOutput.classList.add('hidden');
+                reportabilityOutput.innerHTML = '';
+
+                try {
+                    const prompt = `Assess the reportability of the following real estate transaction under FinCEN's new residential real estate reporting rule, and explain why.
+                    Property Type: ${propTypeValue}
+                    Financing: ${financingValue}
+                    Transferee: ${transfereeValue}
+                    Exemption: ${exemptionValue}
+
+                    Based on these details, is this transaction likely reportable to FinCEN? Provide a clear "Yes, Reportable" or "No, Not Reportable" answer first, followed by a concise explanation that references the four core criteria of the rule.`;
+
+                    let chatHistory = [];
+                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                    const payload = { contents: chatHistory };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                    
+                    let response;
+                    let result;
+                    for (let i = 0; i < 3; i++) {
+                        response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        if (response.status !== 429) {
+                            result = await response.json();
+                            break;
+                        }
+                        await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+                    }
+
+                    if (result && result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        reportabilityOutput.innerHTML = result.candidates[0].content.parts[0].text;
+                        reportabilityOutput.classList.remove('hidden');
+                    } else {
+                        reportabilityOutput.innerHTML = "Could not assess reportability. Please try again.";
+                        reportabilityOutput.classList.remove('hidden');
+                    }
+                } catch (error) {
+                    console.error("Error checking reportability:", error);
+                    reportabilityOutput.innerHTML = "An error occurred while analyzing the transaction. Please try again later.";
+                    reportabilityOutput.classList.remove('hidden');
+                } finally {
+                    reportabilityLoader.classList.add('hidden');
                 }
             });
         });
